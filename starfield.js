@@ -25,7 +25,6 @@ const { Application, Graphics, Container } = PIXI;
   
   let maxStars = 750;
   let maxFPS = 60;
-  let sliderStep = 0.1;
   let warpSpeed = 1;
   let starfield = [];
   
@@ -84,7 +83,7 @@ const { Application, Graphics, Container } = PIXI;
   slider.type = 'range';
   slider.min = '1';
   slider.max = '5';
-  slider.step = sliderStep;
+  slider.step = '0.1';
   slider.value = '1';
   sliderContainer.appendChild(slider);
 
