@@ -5,7 +5,7 @@
  * Created: 2025-09-06
  *
  * Description
- * Overview: The starfield effect is achieved by creating 750 stars as circles/lines and moving them towards the viewer. 
+ * Overview: The starfield effect is achieved by creating 500 stars as circles/lines and moving them towards the viewer. 
  *           A slider is added to manipulate a warp speed value which is applied to determine the stars trail length.
  *
  * Star:     Creates a star and updates its position each frame. Resets the star when it passes the viewer.
@@ -19,7 +19,7 @@ const { Application, Graphics, Container } = PIXI;
 
   const canvasWidth = 360;
   const canvasHeight = 360;
-  const maxStars = 750;
+  const maxStars = 500;
 
   const baseFPS = 60; 
   const targetFrameMS = 1000 / baseFPS;
@@ -67,7 +67,7 @@ const { Application, Graphics, Container } = PIXI;
   slider.type = 'range';
   slider.min = '1';
   slider.max = '5';
-  slider.step = '0.1';
+  slider.step = '0.25';
   slider.value = '1';
   sliderContainer.appendChild(slider);
 
@@ -115,7 +115,7 @@ const { Application, Graphics, Container } = PIXI;
 	  // Stars are drawn as lines whose length depends on warpSpeed. When warpSpeed is 
 	  // equal to one, stars are drawn as circles instead to avoid small unwanted trails.
       if (warpSpeed == 1){
-        graphics.circle(prevStarX, prevStarY, 0.3).stroke({ color: 0xffffff, pixelLine: true });
+        graphics.circle(prevStarX, prevStarY, 0.25).stroke({ color: 0xffffff, pixelLine: true });
       }else{
         graphics.moveTo(prevStarX, prevStarY).lineTo(trailX, trailY).stroke({ color: 0xffffff, pixelLine: true });
       }
