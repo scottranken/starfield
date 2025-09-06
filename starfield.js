@@ -5,7 +5,7 @@
  * Created: 2025-09-06
  *
  * Description
- * Overview: The starfield effect is achieved by creating 500 stars as circles/lines and moving them towards the viewer. 
+ * Overview: The starfield effect is achieved by creating an array of stars as circles/lines and moving them towards the viewer. 
  *           A slider is added to manipulate a warp speed value which is applied to determine the stars trail length.
  *
  * Star:     Creates a star and updates its position each frame. Resets the star when it passes the viewer.
@@ -19,16 +19,42 @@ const { Application, Graphics, Container } = PIXI;
 
   const canvasWidth = 360;
   const canvasHeight = 360;
-  const maxStars = 500;
 
   const baseFPS = 60; 
   const targetFrameMS = 1000 / baseFPS;
   
+  let maxStars = 750;
+  let maxFPS = 60;
+  let sliderStep = 0.1;
   let warpSpeed = 1;
   let starfield = [];
-
+  
+  // Helper functions
+  function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  
+  function projectToScreen(axis, z, dimension){
+	return (axis/z)*dimension;
+  }
+  
+  function isMobileDevice() {
+    return (
+      /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      window.innerWidth < 768
+    );
+  }
+  
+  // Update values for mobile devices
+  if (isMobileDevice()){
+	maxStars = 500;
+	maxFPS = 30;
+	sliderStep = 0.25;
+  }
+  
   // Initialize the application
   await app.init({ background: '#000000', width: canvasWidth, height: canvasHeight });
+  app.ticker.maxFPS = maxFPS;
 
   // Append the application canvas to the container div instead of the body
   document.getElementById("star-field-container").appendChild(app.canvas);
@@ -40,15 +66,6 @@ const { Application, Graphics, Container } = PIXI;
   // Move the container to the center
   container.x = app.screen.width / 2;
   container.y = app.screen.height / 2;
-
-  // Helper functions
-  function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  
-  function projectToScreen(axis, z, dimension){
-	return (axis/z)*dimension;
-  }
   
   // Slider UI
   const sliderContainer = document.createElement('div');
@@ -67,7 +84,7 @@ const { Application, Graphics, Container } = PIXI;
   slider.type = 'range';
   slider.min = '1';
   slider.max = '5';
-  slider.step = '0.25';
+  slider.step = sliderStep;
   slider.value = '1';
   sliderContainer.appendChild(slider);
 
@@ -89,7 +106,7 @@ const { Application, Graphics, Container } = PIXI;
       this.prevZ = this.z;
     }
 
-    update(deltaMS) {
+    update(deltaMS, starGraphics) {
 	  // Where the star is projected before moving closer
       const prevStarX = projectToScreen(this.x, this.z, canvasWidth);
       const prevStarY = projectToScreen(this.y, this.z, canvasHeight);
@@ -115,9 +132,9 @@ const { Application, Graphics, Container } = PIXI;
 	  // Stars are drawn as lines whose length depends on warpSpeed. When warpSpeed is 
 	  // equal to one, stars are drawn as circles instead to avoid small unwanted trails.
       if (warpSpeed == 1){
-        graphics.circle(prevStarX, prevStarY, 0.25).stroke({ color: 0xffffff, pixelLine: true });
+        starGraphics.circle(prevStarX, prevStarY, 0.5);
       }else{
-        graphics.moveTo(prevStarX, prevStarY).lineTo(trailX, trailY).stroke({ color: 0xffffff, pixelLine: true });
+        starGraphics.moveTo(prevStarX, prevStarY).lineTo(trailX, trailY);
       }
 	  
       this.prevZ = this.z;
@@ -132,10 +149,16 @@ const { Application, Graphics, Container } = PIXI;
   // Draw
   function draw() {
     graphics.clear();
-
+	
     for (let i = 0; i < maxStars; i++) {
-      starfield[i].update(app.ticker.deltaMS);
+      starfield[i].update(app.ticker.deltaMS, graphics);
     }
+	
+	if (warpSpeed == 1){
+	  graphics.fill(0xffffff);
+	}else{
+	  graphics.stroke({ width: 1, color: 0xffffff });
+	}
   }
 
   // Update
