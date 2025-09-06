@@ -48,7 +48,6 @@ const { Application, Graphics, Container } = PIXI;
   if (isMobileDevice()){
 	maxStars = 500;
 	maxFPS = 30;
-	sliderStep = 0.25;
   }
   
   // Initialize the application
