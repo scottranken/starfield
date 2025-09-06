@@ -25,6 +25,7 @@ const { Application, Graphics, Container } = PIXI;
   
   let maxStars = 750;
   let maxFPS = 60;
+  let starSize = 0.25;
   let warpSpeed = 1;
   let starfield = [];
   
@@ -48,6 +49,7 @@ const { Application, Graphics, Container } = PIXI;
   if (isMobileDevice()){
 	maxStars = 500;
 	maxFPS = 30;
+	starSize = 0.5;
   }
   
   // Initialize the application
@@ -130,7 +132,7 @@ const { Application, Graphics, Container } = PIXI;
 	  // Stars are drawn as lines whose length depends on warpSpeed. When warpSpeed is 
 	  // equal to one, stars are drawn as circles instead to avoid small unwanted trails.
       if (warpSpeed == 1){
-        starGraphics.circle(prevStarX, prevStarY, 0.5);
+        starGraphics.circle(prevStarX, prevStarY, starSize);
       }else{
         starGraphics.moveTo(prevStarX, prevStarY).lineTo(trailX, trailY);
       }
