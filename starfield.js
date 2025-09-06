@@ -25,7 +25,7 @@ const { Application, Graphics, Container } = PIXI;
   
   let maxStars = 750;
   let maxFPS = 60;
-  let starSize = 0.25;
+  let starSize = 0.5;
   let warpSpeed = 1;
   let starfield = [];
   
@@ -49,7 +49,7 @@ const { Application, Graphics, Container } = PIXI;
   if (isMobileDevice()){
 	maxStars = 500;
 	maxFPS = 30;
-	starSize = 0.5;
+	starSize = 0.75;
   }
   
   // Initialize the application
